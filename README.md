@@ -71,7 +71,3 @@ http://localhost:8080/swagger-ui.html
 - `service`: Business logic
 - `controller`: REST endpoints
 - `security`: JWT authentication and authorization
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
