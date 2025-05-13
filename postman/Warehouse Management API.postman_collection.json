@@ -1,0 +1,295 @@
+{
+	"info": {
+		"_postman_id": "f2ad15b5-b6d9-4092-98a5-542a30adf0ea",
+		"name": "Warehouse Management API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44286964",
+		"_collection_link": "https://andri-5312932.postman.co/workspace/Andri's-Workspace~b0ef81d6-62f5-4b5a-8528-c796959af6b6/collection/44286964-f2ad15b5-b6d9-4092-98a5-542a30adf0ea?action=share&source=collection_link&creator=44286964"
+	},
+	"item": [
+		{
+			"name": "Login as Client",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"token\", jsonData.token);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"client\",\r\n    \"password\": \"client123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/auth/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"order_id\", jsonData.id);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"deadlineDate\": \"2025-06-15\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/client/orders",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"client",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Item to Order",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"item\": {\r\n        \"id\": 1\r\n    },\r\n    \"requestedQuantity\": 5\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/client/orders/{{order_id}}/items",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"client",
+						"orders",
+						"{{order_id}}",
+						"items"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit Order",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/client/orders/{{order_id}}/submit",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"client",
+						"orders",
+						"{{order_id}}",
+						"submit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login as Manager",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test if response is OK\r",
+							"pm.test(\"Response is OK\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Parse the response JSON\r",
+							"var responseJson = pm.response.json();\r",
+							"\r",
+							"// Test if token exists in the response\r",
+							"pm.test(\"Token exists in response\", function() {\r",
+							"    pm.expect(responseJson.token).to.exist;\r",
+							"});\r",
+							"\r",
+							"// Save the token to an environment variable\r",
+							"if (responseJson.token) {\r",
+							"    pm.environment.set(\"manager_token\", responseJson.token);\r",
+							"    console.log(\"Manager token saved to environment variable\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"manager\",\r\n    \"password\": \"manager123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/auth/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "View All Orders",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{manager_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/manager/orders",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"manager",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Approve Order",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{manager_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/manager/orders/{{order_id}}/approve",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"manager",
+						"orders",
+						"{{order_id}}",
+						"approve"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
